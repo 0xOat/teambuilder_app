@@ -22,7 +22,7 @@ flutter doctor
 หากยังไม่ได้โคลนโปรเจกต์จาก GitHub:
 
 ```bash
-git clone https://github.com/<YOUR_USERNAME>/teambuilder_app.git
+git clone https://github.com/0xOat/teambuilder_app.git
 cd teambuilder_app
 ```
 
