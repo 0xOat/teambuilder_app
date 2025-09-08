@@ -19,4 +19,15 @@ class PokeApiService {
       return Pokemon.fromIdName(idx, name);
     }).toList();
   }
+
+  Future<Map<String, dynamic>> fetchPokemonDetail(String name) async {
+    final url = Uri.parse('$base/pokemon/${name.toLowerCase()}');
+    final res = await http.get(url);
+
+    if (res.statusCode != 200) {
+      throw Exception('Failed to fetch details for $name');
+    }
+
+    return jsonDecode(res.body) as Map<String, dynamic>;
+  }
 }
