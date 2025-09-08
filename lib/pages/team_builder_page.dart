@@ -5,6 +5,7 @@ import '../models/pokemon.dart';
 import '../models/pokemon_team.dart';
 import '../widgets/pokemon_card.dart';
 import '../widgets/team_card.dart';
+import '../widgets/team_detail.dart';
 
 class TeamBuilderPage extends GetView<PokemonController> {
   const TeamBuilderPage({super.key});
@@ -177,6 +178,7 @@ class TeamBuilderPage extends GetView<PokemonController> {
           onRename: () => _showRenameDialog(team: list[i]),
           onDuplicate: () => controller.duplicateTeam(list[i]),
           onDelete: () => _confirmDelete(list[i]),
+          onDetail: () => _showDetailTeam(list[i]),
         ),
       );
     });
@@ -217,5 +219,9 @@ class TeamBuilderPage extends GetView<PokemonController> {
         ),
       ],
     ));
+  }
+
+  void _showDetailTeam(PokemonTeam team) {
+    Get.to(() => TeamDetailPage(team: team));
   }
 }

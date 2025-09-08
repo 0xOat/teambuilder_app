@@ -11,6 +11,7 @@ class TeamCard extends StatelessWidget {
     required this.onRename,
     required this.onDuplicate,
     required this.onDelete,
+    required this.onDetail,
   });
 
   final PokemonTeam team;
@@ -19,6 +20,7 @@ class TeamCard extends StatelessWidget {
   final VoidCallback onRename;
   final VoidCallback onDuplicate;
   final VoidCallback onDelete;
+  final VoidCallback onDetail;
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +92,9 @@ class TeamCard extends StatelessWidget {
                         case 'delete':
                           onDelete();
                           break;
+                        case 'detail':
+                          onDetail();
+                          break;
                       }
                     },
                     itemBuilder: (_) => const [
@@ -97,6 +102,7 @@ class TeamCard extends StatelessWidget {
                       PopupMenuItem(value: 'rename', child: Text('Rename')),
                       PopupMenuItem(value: 'duplicate', child: Text('Duplicate')),
                       PopupMenuItem(value: 'delete', child: Text('Delete')),
+                      PopupMenuItem(value: 'detail', child: Text('Detail')),
                     ],
                   )
                 ],
