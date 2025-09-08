@@ -13,7 +13,29 @@ class PokemonCard extends GetView<PokemonController> {
     return Obx(() {
       final selected = controller.isSelected(pokemon);
       return InkWell(
-        onTap: () => controller.toggle(pokemon),
+        onTap: () {
+          final team = controller.currentTeam.value;
+          if (team == null) {
+            Get.dialog(
+              AlertDialog(
+                title: const Text('No Active Team'),
+                content: const Text('Please create or select a team first.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Get.back(); 
+                      controller.currentView.value = 'teams'; 
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              ),
+            );
+          } else {
+            controller.toggle(pokemon);
+          }
+        },
+
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 120),
           decoration: BoxDecoration(
