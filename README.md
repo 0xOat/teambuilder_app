@@ -38,3 +38,7 @@ flutter pub get
 flutter run -d chrome
 ```
 
+## คำสั่งในการสร้างข้อมูล ( Generate Data)
+```
+dart run lib/commands/command_runner.dart generate all
+```

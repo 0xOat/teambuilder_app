@@ -124,7 +124,7 @@ class DataGenerator {
         categoryId: category.id,
         ingredients: _generateIngredients(foodData['name']),
         spicyLevel: foodData['spicy'],
-        isAvailable: _random.nextBool() ? true : _random.nextDouble() > 0.2, // 80% available
+        isAvailable: true,
         created: DateTime.now(),
         updated: DateTime.now(),
       );
