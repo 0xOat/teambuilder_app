@@ -38,6 +38,11 @@ class OrderNotifier extends AsyncNotifier<List<Order>> {
     }
   }
 
+  Future<void> refreshOrders() async {
+    state = const AsyncValue.loading();
+    state = AsyncValue.data(await loadOrders());
+  }
+
   Future<void> addOrder(Order order, List<OrderItem> items) async {
     state = const AsyncValue.loading();
     
@@ -60,8 +65,7 @@ class OrderNotifier extends AsyncNotifier<List<Order>> {
           );
         }
         
-        final currentOrders = await future;
-        state = AsyncValue.data([newOrder, ...currentOrders]);
+        state = AsyncValue.data(await loadOrders());
       }
     } catch (error) {
       state = AsyncValue.error(error, StackTrace.current);
@@ -78,14 +82,12 @@ class OrderNotifier extends AsyncNotifier<List<Order>> {
       );
       
       if (updatedOrder != null) {
-        final currentOrders = await future;
-        final updatedList = currentOrders
-            .map((o) => o.id == id ? updatedOrder : o)
-            .toList();
-        state = AsyncValue.data(updatedList);
+        state = AsyncValue.data(await loadOrders());
       }
     } catch (error) {
-      state = AsyncValue.error(error, StackTrace.current);
+      print('Update order status error: $error');
+      state = AsyncValue.data(await loadOrders());
+      rethrow; 
     }
   }
 
@@ -93,13 +95,15 @@ class OrderNotifier extends AsyncNotifier<List<Order>> {
     try {
       final success = await _pbService.delete('orders', id);
       
-      if (success) {
-        final currentOrders = await future;
-        final filteredList = currentOrders.where((o) => o.id != id).toList();
-        state = AsyncValue.data(filteredList);
+      state = AsyncValue.data(await loadOrders());
+      
+      if (!success) {
+        throw Exception('Failed to delete order');
       }
     } catch (error) {
-      state = AsyncValue.error(error, StackTrace.current);
+      print('Delete order error: $error');
+      state = AsyncValue.data(await loadOrders());
+      rethrow; 
     }
   }
 }

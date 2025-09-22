@@ -39,6 +39,11 @@ flutter run -d chrome
 ```
 
 ## คำสั่งในการสร้างข้อมูล ( Generate Data)
-```
+
+```bash
+dart run lib/commands/command_runner.dart generate categories 5
+dart run lib/commands/command_runner.dart generate foods 15
+dart run lib/commands/command_runner.dart generate orders 30
 dart run lib/commands/command_runner.dart generate all
+dart run lib/commands/command_runner.dart clear
 ```

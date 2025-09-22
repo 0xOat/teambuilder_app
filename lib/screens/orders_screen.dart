@@ -193,8 +193,16 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen>
     return actions;
   }
 
-  void _updateOrderStatus(WidgetRef ref, String orderId, OrderStatus newStatus) {
-    ref.read(orderProvider.notifier).updateOrderStatus(orderId, newStatus);
+  void _updateOrderStatus(WidgetRef ref, String orderId, OrderStatus newStatus) async {
+    try {
+      await ref.read(orderProvider.notifier).updateOrderStatus(orderId, newStatus);
+      // Refresh data หลังจากอัปเดตสำเร็จ
+      await ref.read(orderProvider.notifier).loadOrders();
+    } catch (error) {
+      print('Failed to update order status: $error');
+      // Refresh data เมื่อเกิด error
+      await ref.read(orderProvider.notifier).loadOrders();
+    }
   }
 
   String _getStatusText(OrderStatus status) {
@@ -234,9 +242,27 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen>
             child: const Text('ยกเลิก'),
           ),
           ElevatedButton(
-            onPressed: () {
-              ref.read(orderProvider.notifier).deleteOrder(order.id);
-              Navigator.pop(context);
+            onPressed: () async {
+              try {
+                await ref.read(orderProvider.notifier).deleteOrder(order.id);
+                // Refresh data หลังจากลบสำเร็จ
+                await ref.read(orderProvider.notifier).loadOrders();
+                if (context.mounted) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('ลบคำสั่งซื้อเรียบร้อย')),
+                  );
+                }
+              } catch (error) {
+                // Refresh data เมื่อเกิด error
+                await ref.read(orderProvider.notifier).loadOrders();
+                if (context.mounted) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('เกิดข้อผิดพลาด: $error')),
+                  );
+                }
+              }
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             child: const Text('ลบ'),

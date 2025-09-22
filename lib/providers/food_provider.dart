@@ -59,6 +59,20 @@ class FoodNotifier extends AsyncNotifier<List<Food>> {
 
   Future<void> updateFood(String id, Food food) async {
     try {
+      // ตรวจสอบว่า record ยังมีอยู่หรือไม่
+      final existingFood = await _pbService.getOne<Food>(
+        'foods',
+        id,
+        Food.fromJson,
+      );
+      
+      if (existingFood == null) {
+        print('Food not found: $id');
+        // Refresh data
+        state = AsyncValue.data(await loadFoods());
+        return;
+      }
+      
       final updatedFood = await _pbService.update<Food>(
         'foods',
         id,
@@ -74,7 +88,8 @@ class FoodNotifier extends AsyncNotifier<List<Food>> {
         state = AsyncValue.data(updatedList);
       }
     } catch (error) {
-      state = AsyncValue.error(error, StackTrace.current);
+      print('Update food error: $error');
+      state = AsyncValue.data(await loadFoods());
     }
   }
 
@@ -88,7 +103,8 @@ class FoodNotifier extends AsyncNotifier<List<Food>> {
         state = AsyncValue.data(filteredList);
       }
     } catch (error) {
-      state = AsyncValue.error(error, StackTrace.current);
+      print('Delete food error: $error');
+      state = AsyncValue.data(await loadFoods());
     }
   }
 }

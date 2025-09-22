@@ -46,6 +46,20 @@ class CategoryNotifier extends AsyncNotifier<List<Category>> {
 
   Future<void> updateCategory(String id, Category category) async {
     try {
+      // ตรวจสอบว่า record ยังมีอยู่หรือไม่
+      final existingCategory = await _pbService.getOne<Category>(
+        'categories',
+        id,
+        Category.fromJson,
+      );
+      
+      if (existingCategory == null) {
+        print('Category not found: $id');
+        // Refresh data
+        state = AsyncValue.data(await loadCategories());
+        return;
+      }
+      
       final updatedCategory = await _pbService.update<Category>(
         'categories',
         id,
@@ -61,7 +75,8 @@ class CategoryNotifier extends AsyncNotifier<List<Category>> {
         state = AsyncValue.data(updatedList);
       }
     } catch (error) {
-      state = AsyncValue.error(error, StackTrace.current);
+      print('Update category error: $error');
+      state = AsyncValue.data(await loadCategories());
     }
   }
 
@@ -75,7 +90,8 @@ class CategoryNotifier extends AsyncNotifier<List<Category>> {
         state = AsyncValue.data(filteredList);
       }
     } catch (error) {
-      state = AsyncValue.error(error, StackTrace.current);
+      print('Delete category error: $error');
+      state = AsyncValue.data(await loadCategories());
     }
   }
 }
