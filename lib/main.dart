@@ -9,6 +9,7 @@ import 'screens/home_screen.dart';
 import 'screens/categories_screen.dart';
 import 'screens/foods_screen.dart';
 import 'screens/orders_screen.dart';
+import 'screens/reports_screen.dart';
 
 void main() {
   PocketBaseService().initialize();
@@ -44,6 +45,10 @@ class MyApp extends ConsumerWidget {
       GoRoute(
         path: '/orders',
         builder: (context, state) => const OrdersScreen(),
+      ),
+      GoRoute(
+        path: '/reports',
+        builder: (context, state) => const ReportsScreen(),
       ),
     ],
   );

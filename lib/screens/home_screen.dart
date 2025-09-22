@@ -78,9 +78,7 @@ class HomeScreen extends ConsumerWidget {
                     'รายงาน',
                     Icons.analytics,
                     Colors.purple,
-                    () {
-                      // TODO: Navigate to reports
-                    },
+                    () => context.go('/reports'),
                   ),
                 ],
               ),
