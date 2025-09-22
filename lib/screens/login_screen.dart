@@ -85,7 +85,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
+                if (authState.errorMessage != null)
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.red.shade50,
+                      border: Border.all(color: Colors.red.shade200),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      authState.errorMessage!,
+                      style: TextStyle(color: Colors.red.shade700),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ElevatedButton(
                   onPressed: authState.isLoading ? null : _handleLogin,
                   style: ElevatedButton.styleFrom(
@@ -94,6 +109,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   child: authState.isLoading
                       ? const CircularProgressIndicator()
                       : const Text('เข้าสู่ระบบ'),
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: authState.isLoading ? null : () => context.go('/register'),
+                  child: const Text('ยังไม่มีบัญชี? สมัครสมาชิก'),
                 ),
               ],
             ),

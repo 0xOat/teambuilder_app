@@ -26,6 +26,23 @@ class PocketBaseService {
     }
   }
 
+  Future<bool> register(String name, String email, String password) async {
+    try {
+      final data = {
+        'email': email,
+        'password': password,
+        'passwordConfirm': password,
+        'name': name,
+      };
+      
+      await _pb.collection('users').create(body: data);
+      return true;
+    } catch (e) {
+      print('Register error: $e');
+      return false;
+    }
+  }
+
   Future<void> logout() async {
     _pb.authStore.clear();
   }

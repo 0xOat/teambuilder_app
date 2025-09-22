@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'services/pocketbase_service.dart';
 import 'providers/auth_provider.dart';
 import 'screens/login_screen.dart';
+import 'screens/register_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/categories_screen.dart';
 import 'screens/foods_screen.dart';
@@ -23,6 +24,10 @@ class MyApp extends ConsumerWidget {
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/register',
+        builder: (context, state) => const RegisterScreen(),
       ),
       GoRoute(
         path: '/home',
