@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/auth_provider.dart';
 import '../providers/order_provider.dart';
+import '../providers/realtime_order_provider.dart';
+import '../widgets/realtime_notifications.dart';
+import '../widgets/connection_status.dart';
 import '../models/order.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -11,11 +14,16 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final orders = ref.watch(orderProvider);
+    final realtimeState = ref.watch(realtimeOrderProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('ระบบจัดการร้านอาหาร'),
         actions: [
+          const ConnectionStatus(),
+          const SizedBox(width: 8),
+          const RealtimeNotifications(),
+          const SizedBox(width: 8),
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
@@ -30,9 +38,22 @@ class HomeScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'ภาพรวม',
-              style: Theme.of(context).textTheme.headlineSmall,
+            Row(
+              children: [
+                Text(
+                  'ภาพรวม',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                const Spacer(),
+                if (realtimeState.lastUpdate != null)
+                  Text(
+                    'อัปเดตล่าสุด: ${_formatTime(realtimeState.lastUpdate!)}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+              ],
             ),
             const SizedBox(height: 16),
             orders.when(
@@ -178,5 +199,9 @@ class HomeScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  String _formatTime(DateTime time) {
+    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}:${time.second.toString().padLeft(2, '0')}';
   }
 }
