@@ -1,57 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'services/pocketbase_service.dart';
-import 'providers/auth_provider.dart';
-import 'screens/login_screen.dart';
-import 'screens/home_screen.dart';
-import 'screens/categories_screen.dart';
-import 'screens/foods_screen.dart';
-import 'screens/orders_screen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  PocketBaseService().initialize();
-  runApp(ProviderScope(child: MyApp()));
+import 'providers/chat_provider.dart';
+import 'screens/chat_screen.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ChatProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
-class MyApp extends ConsumerWidget {
-  MyApp({Key? key}) : super(key: key);
-
-  final GoRouter _router = GoRouter(
-    initialLocation: '/login',
-    routes: [
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginScreen(),
-      ),
-      GoRoute(
-        path: '/home',
-        builder: (context, state) => const HomeScreen(),
-      ),
-      GoRoute(
-        path: '/categories',
-        builder: (context, state) => const CategoriesScreen(),
-      ),
-      GoRoute(
-        path: '/foods',
-        builder: (context, state) => const FoodsScreen(),
-      ),
-      GoRoute(
-        path: '/orders',
-        builder: (context, state) => const OrdersScreen(),
-      ),
-    ],
-  );
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return MaterialApp.router(
-      title: 'Restaurant App',
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'AI Chat MCP',
       theme: ThemeData(
-        primarySwatch: Colors.orange,
         useMaterial3: true,
+        colorSchemeSeed: Colors.blue,
       ),
-      routerConfig: _router,
+      home: const ChatScreen(),
     );
   }
 }
